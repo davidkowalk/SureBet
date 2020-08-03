@@ -1,5 +1,7 @@
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import unquote
 import math_engine as en
+import webscraper as ws
 
 def main():
     global odds, websites
@@ -36,8 +38,9 @@ def find_bets(budget):
     return website_list, bets, best, arbitrage
 
 def autofind(type:str, url:str):
+    global websites, odds
     if type == "oddschecker":
-        websites, odds = oddschecker(url)
+        websites, odds = ws.oddschecker(url)
 
 
 class MyServer(BaseHTTPRequestHandler):
@@ -139,6 +142,19 @@ class MyServer(BaseHTTPRequestHandler):
             index = data[0].find("=")+1
             budget = int(data[0][index:])
             self.wfile.write(bytes(self._format_find(budget), "utf-8"))
+
+        elif self.path == "/autofill":
+
+            data = body.split("&")
+            index = data[0].find("=")+1
+            type = data[0][index:]
+
+            index = data[1].find("=")+1
+            url = unquote(data[1][index:])
+
+            autofind(type, url)
+
+            self.wfile.write(bytes(self._format_index(), "utf-8"))
 
 
 if __name__ == '__main__':

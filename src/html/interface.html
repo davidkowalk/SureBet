@@ -28,7 +28,7 @@
         display: grid;
       }
 
-      .odds_input {
+      .form_input {
         border-radius: 5px;
         height: 27px;
         background-color: #CECECE
@@ -40,7 +40,7 @@
           background-color: #CECECE
       }
 
-      .submit_odds {
+      .submit_button {
         border-radius: 5px;
         height: 27px;
         background-color: #CECECE
@@ -82,8 +82,16 @@
 
     <div class="input_container">
       <form action="submit" method="POST">
-        <input type="text" class="name_input" placeholder="Bookmaker" name="website"> <input type="text" class="odds_input" placeholder="Odds 1" name="o1"/> <input type="text" class="odds_input" placeholder="Odds 2" name="o2" /> <input type="text" class="odds_input" placeholder="Odds 3" name="o3"/> <input type="submit" class="submit_odds"/>
-        <a href="reset"><input type="button" value = "Reset"></input></a>
+        <input type="text" class="name_input" placeholder="Bookmaker" name="website"> <input type="text" class="form_input" placeholder="Odds 1" name="o1"/> <input type="text" class="form_input" placeholder="Odds 2" name="o2" /> <input type="text" class="form_input" placeholder="Odds 3" name="o3"/> <input type="submit" class="submit_button"/>
+        <a href="reset"><input type="button" value = "Reset" class="submit_button"></input></a>
+      </form>
+      <form action="autofill" method="POST">
+        <select name="websites" class = "form_input">
+          <option value="null">--Please Select--</option>
+          <option value="oddschecker">Oddschecker</option>
+        </select>
+        <input type="url" placeholder="url" name ="url" class="form_input"/>
+        <input type="submit" class="submit_button" value="Search"/>
       </form>
     </div>
 

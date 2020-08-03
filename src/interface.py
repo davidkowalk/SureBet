@@ -35,6 +35,10 @@ def find_bets(budget):
 
     return website_list, bets, best, arbitrage
 
+def autofind(type:str, url:str):
+    if type == "oddschecker":
+        websites, odds = oddschecker(url)
+
 
 class MyServer(BaseHTTPRequestHandler):
 

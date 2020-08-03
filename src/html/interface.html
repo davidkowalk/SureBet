@@ -1,0 +1,109 @@
+<html>
+  <header>
+    <style>
+
+      html {
+        background: #2E394C
+      }
+
+      table {
+        font-family: arial, sans-serif;
+        width: 100%;
+        background-color: white;
+        border-radius: 5px;
+      }
+
+      tr:nth-child(even) {
+        background-color: #dddddd;
+      }
+
+      td, th {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+        text-align: center;
+      }
+
+      .grid_container {
+        display: grid;
+      }
+
+      .odds_input {
+        border-radius: 5px;
+        height: 27px;
+        background-color: #CECECE
+      }
+
+      .name_input {
+          border-radius: 5px;
+          height: 27px;
+          background-color: #CECECE
+      }
+
+      .submit_odds {
+        border-radius: 5px;
+        height: 27px;
+        background-color: #CECECE
+      }
+
+      form button {
+          border-radius: 5px;
+          height: 27px;
+          background-color: #CECECE
+      }
+
+      .input_container {
+        text-align: center;
+      }
+
+      .head {
+        text-align: center;
+        color: white;
+        text-decoration: underline;
+      }
+
+      .footer {
+        text-align: center;
+      }
+
+      .footer button {
+          border-radius: 5px;
+          height: 27px;
+          background-color: #CECECE
+      }
+
+    </style>
+  </header>
+
+  <body>
+    <div class="head">
+      <h1>Arbitrage Finder</h1>
+    </div>
+
+    <div class="input_container">
+      <form action="submit" method="POST">
+        <input type="text" class="name_input" placeholder="Bookmaker" name="website"> <input type="text" class="odds_input" placeholder="Odds 1" name="o1"/> <input type="text" class="odds_input" placeholder="Odds 2" name="o2" /> <input type="text" class="odds_input" placeholder="Odds 3" name="o3"/> <input type="submit" class="submit_odds"/>
+        <a href="reset"><input type="button" value = "Reset"></input></a>
+      </form>
+    </div>
+
+    <div class="table">
+      <table>
+        <tr>
+          <th>Bookmaker</th>
+          <th>Odds Option 1</th>
+          <th>Odds Option 2</th>
+          <th>Odds Option 3</th>
+        </tr>
+        [TABLE_ROWS]
+      </table>
+    </div>
+
+    <div class="footer">
+      <br/><br/>
+      <form action="find", method="post">
+        <input type="number" name="budged" placeholder="Budged">
+        <input type="submit" name="submit" value="Find">
+      </form>
+    </div>
+  </body>

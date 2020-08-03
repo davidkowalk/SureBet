@@ -41,11 +41,13 @@ def get_arbitrage(odds):
     return a
 
 
-def calcultate_bets(budget, odds, arbitrage = get_arbitrage(odds)):
+def calculate_bets(budget, odds, arbitrage = None):
     """
     Returns bets for each outcome based on your budget and the odds
     """
     bets = []
+    if arbitrage is None:
+        arbitrage = get_arbitrage(odds)
 
     for odd in odds:
         bets.append(budget/(odd*arbitrage))

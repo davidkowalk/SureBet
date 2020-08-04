@@ -2,6 +2,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from urllib.parse import unquote
 import math_engine as en
 import webscraper as ws
+import webbrowser
 
 def main():
     global odds, websites
@@ -15,6 +16,8 @@ def main():
     print("Starting")
     webServer = HTTPServer((hostName, serverPort), MyServer)
     print("Server started")
+
+    webbrowser.open("http://127.0.0.1:8080")
 
     try:
         webServer.serve_forever()
@@ -216,7 +219,7 @@ class MyServer(BaseHTTPRequestHandler):
                 if odds[i] == "":
                     del odds[i]
                     continue
-                    
+
                 odds[i] = float(odds[i].replace(",", "."))
 
             self.wfile.write(bytes(self._format_find_direct(bookies, budget, odds), "utf-8"))

@@ -37,6 +37,12 @@ def find_bets(budget):
 
     return website_list, bets, best, arbitrage
 
+def find_bets_direct(budget, odds):
+    arbitrage = en.get_arbitrage(odds)
+    bets = en.calculate_bets(budget, odds, arbitrage)
+
+    return bets, arbitrage
+
 def autofind(type:str, url:str):
     global websites, odds
     if type == "oddschecker":
@@ -90,6 +96,40 @@ class MyServer(BaseHTTPRequestHandler):
 
         return ret_html
 
+    def _format_find_direct(self, bookmakers, budget, odds):
+        with open("html/find_direct.html") as file:
+            interface_html = file.read()
+
+        bets, arbitrage = find_bets_direct(budget, odds)
+        list_html = ""
+
+        for i in range(len(bets)):
+            row = "<tr>"
+
+            row += "<td>"+str(i)+"</td>"
+            row += "<td>"+bookmakers[i]+"</td>"
+            row += "<td>"+str(odds[i])+"</td>"
+            row += "<td>"+str(round(bets[i]*100)/100)+"</td>"
+
+            row += "</tr>"
+
+            list_html += row
+
+        ret_html = interface_html.replace("[TABLE_ROWS]", list_html)
+        ret_html = ret_html.replace("[ARBITRAGE]", str(round(arbitrage*100)/100))
+
+        return ret_html
+
+    def _format_find_direct_empty(self):
+
+        with open("html/find_direct.html") as file:
+            interface_html = file.read()
+
+        ret_html = interface_html.replace("[TABLE_ROWS]", "")
+        ret_html = ret_html.replace("[ARBITRAGE]", "0")
+
+        return ret_html
+
     def _send_headers(self):
         self.send_response(200)
         self.send_header('Content-type', 'text/html')
@@ -103,7 +143,10 @@ class MyServer(BaseHTTPRequestHandler):
             odds = []
             websites = []
 
-        self.wfile.write(bytes(self._format_index(), "utf-8"))
+        if self.path == "/find_direct":
+            self.wfile.write(bytes(self._format_find_direct_empty(), "utf-8"))
+        else:
+            self.wfile.write(bytes(self._format_index(), "utf-8"))
 
     def do_POST(self):
 
@@ -155,6 +198,28 @@ class MyServer(BaseHTTPRequestHandler):
             autofind(type, url)
 
             self.wfile.write(bytes(self._format_index(), "utf-8"))
+
+        elif self.path == "/find_direct":
+            print("Find Firect")
+            data = body.split("&")
+            raw_data = []
+
+            for point in data:
+                index = point.find("=")+1
+                raw_data.append(unquote(point[index:]))
+
+            bookies = raw_data[0:3]
+            odds = raw_data[3:6]
+            budget = int(raw_data[6])
+
+            for i in range(len(odds)):
+                if odds[i] == "":
+                    del odds[i]
+                    continue
+                    
+                odds[i] = float(odds[i].replace(",", "."))
+
+            self.wfile.write(bytes(self._format_find_direct(bookies, budget, odds), "utf-8"))
 
 
 if __name__ == '__main__':

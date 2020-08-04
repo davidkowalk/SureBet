@@ -37,7 +37,12 @@ def oddschecker(url):
         options.append(row.find("td")[1:])
 
     for i in range(len(options[0])):
-        book = [options[0][i], options[1][i], options[2][i]]
+        book = []
+
+        for j in range(0, len(options)):
+            book.append(options[j][i])
+        # options[0][i], options[1][i], options[2][i]
+
         float_book = []
 
         for cell in book:

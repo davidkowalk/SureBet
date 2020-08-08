@@ -83,12 +83,15 @@ class MyServer(BaseHTTPRequestHandler):
         website_list, bets, odds, arbitrage = find_bets(budget)
 
         for i in range(len(bets)):
+            bet = round(bets[i]*100)/100
+            win_ret = round(bet*odds[i]*100)/100
             row = "<tr>"
 
             row += "<td>"+str(i)+"</td>"
             row += "<td>"+website_list[i]+"</td>"
             row += "<td>"+str(odds[i])+"</td>"
-            row += "<td>"+str(round(bets[i]*100)/100)+"</td>"
+            row += "<td>"+str(bet)+"</td>"
+            row += "<td>"+str(win_ret)+"</td>"
 
             row += "</tr>"
 
@@ -107,12 +110,16 @@ class MyServer(BaseHTTPRequestHandler):
         list_html = ""
 
         for i in range(len(bets)):
+            bet = round(bets[i]*100)/100
+            win_ret = round(bet*odds[i]*100)/100
+
             row = "<tr>"
 
             row += "<td>"+str(i)+"</td>"
-            row += "<td>"+bookmakers[i]+"</td>"
+            row += "<td>"+bookmakers[i].replace("+", " ")+"</td>"
             row += "<td>"+str(odds[i])+"</td>"
-            row += "<td>"+str(round(bets[i]*100)/100)+"</td>"
+            row += "<td>"+str(bet)+"</td>"
+            row += "<td>"+str(win_ret)+"</td>"
 
             row += "</tr>"
 
@@ -148,11 +155,13 @@ class MyServer(BaseHTTPRequestHandler):
 
         if self.path == "/find_direct":
             self.wfile.write(bytes(self._format_find_direct_empty(), "utf-8"))
+        elif self.path == "/favicon.ico":
+            pass
         else:
             self.wfile.write(bytes(self._format_index(), "utf-8"))
 
     def do_POST(self):
-
+        global odds, websites
         self._send_headers()
 
         content_length = int(self.headers['Content-Length'])
@@ -171,7 +180,10 @@ class MyServer(BaseHTTPRequestHandler):
                 data[i] = data[i].replace("%2C", ".")
                 cut_pos = data[i].find("=")
                 data[i] = data[i][cut_pos+1:]
-                data[i] = float(data[i])
+                if data[i] != "":
+                    data[i] = float(data[i])
+                else:
+                    del data[i]
 
             odds.append(data)
 
@@ -212,17 +224,17 @@ class MyServer(BaseHTTPRequestHandler):
                 raw_data.append(unquote(point[index:]))
 
             bookies = raw_data[0:3]
-            odds = raw_data[3:6]
+            best_odds = raw_data[3:6]
             budget = int(raw_data[6])
 
-            for i in range(len(odds)):
-                if odds[i] == "":
-                    del odds[i]
+            for i in range(len(best_odds)):
+                if best_odds[i] == "":
+                    del best_odds[i]
                     continue
 
-                odds[i] = float(odds[i].replace(",", "."))
+                best_odds[i] = float(best_odds[i].replace(",", "."))
 
-            self.wfile.write(bytes(self._format_find_direct(bookies, budget, odds), "utf-8"))
+            self.wfile.write(bytes(self._format_find_direct(bookies, budget, best_odds), "utf-8"))
 
 
 if __name__ == '__main__':

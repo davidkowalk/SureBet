@@ -157,6 +157,9 @@ class MyServer(BaseHTTPRequestHandler):
             self.wfile.write(bytes(self._format_find_direct_empty(), "utf-8"))
         elif self.path == "/favicon.ico":
             pass
+        elif self.path == "/shutdown":
+            self.wfile.write(bytes("Shutting Down", "utf-8"))
+            exit()
         else:
             self.wfile.write(bytes(self._format_index(), "utf-8"))
 
